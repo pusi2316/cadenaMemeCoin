@@ -6,28 +6,22 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 contract CoinContract is ERC20, Ownable, ERC20Burnable {
-    event coinsMinted(address indexed owner, uint256 amount, string message);
-    event coinsBurned(address indexed owner, uint256 amount, string message);
-    event additionalCoinsMinted(address indexed owner, uint256 amount, string message);
-    event coinsTransfered(address indexed snder, address indexed to, uint256 amount, string message);
+    event onCoinsMinted(address indexed owner, uint256 amount, string message);
+    event onCoinsBurned(address indexed owner, uint256 amount, string message);
+    event onAdditionalCoinsMinted(address indexed owner, uint256 amount, string message);
 
     constructor() ERC20("AwesomeCoin", "AWC") {
-        _mint(msg.sender, 2000*10**decimals());
-        emit coinsMinted(msg.sender, 2000*10*decimals(), "AwesomeCoin has been bor with a supply of initial coins");
+        _mint(msg.sender, 2000*10**18);
+        emit onCoinsMinted(msg.sender, 2000*10**18, "AwesomeCoin has been born with a supply of initial coins");
     }
 
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
-        emit additionalCoinsMinted(msg.sender, _amount, "Coins minted.");
+        emit onAdditionalCoinsMinted(msg.sender, _amount, "Coins minted.");
     }
 
     function burn(uint256 _amount) public override onlyOwner {
         _burn(msg.sender, _amount);
-        emit coinsBurned(msg.sender, _amount, "Coins burned");
-    }
-
-    function transfer(address _to, uint256 _amount) public override returns(bool){
-        _transfer(msg.sender, _to, _amount);
-        return true;
+        emit onCoinsBurned(msg.sender, _amount, "Coins burned");
     }
 }
